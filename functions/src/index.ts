@@ -1,8 +1,34 @@
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
+admin.initializeApp()
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
+const complaint = {
+    type: 'test backend',
+    status: 'tesing',
+    address: 'somewhere',
+    company: 'Marinych'
+}
 
-export const helloWorld = functions.https.onRequest((request, response) => {
-  response.send("Hello from Firebase, bitches!");
-});
+export const readComplaint = 
+functions.https.onRequest((request, response) => {
+     admin.firestore().collection('ComplaintsList').get()
+    .then(snapshot => {
+        const data = new Array()
+        snapshot.forEach(doc => {
+            data.push(doc.data())
+        })
+        response.send(data)
+    })
+    .catch(err => {
+      console.log(err)
+      response.status(500).send(err)
+    })
+})
+
+export const writeComplaint = 
+functions.https.onRequest((request, response) => {
+     return admin.firestore().collection('ComplaintsList').doc('test')
+     .set(complaint).then(() => {
+         console.log('#victory!')
+     })
+})
