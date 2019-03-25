@@ -30,5 +30,14 @@ functions.https.onRequest((request, response) => {
      return admin.firestore().collection('ComplaintsList').doc('test')
      .set(complaint).then(() => {
          console.log('#victory!')
+         response.send(complaint)
      })
 })
+
+/*function parseDemo(url) {
+    loadJSON(url, gotData)
+} 
+
+function gotData(data) {
+    console.log(data)
+}*/
