@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+
 admin.initializeApp()
 
 const complaint = {
@@ -34,10 +35,22 @@ functions.https.onRequest((request, response) => {
      })
 })
 
-/*function parseDemo(url) {
-    loadJSON(url, gotData)
-} 
+function httpGet() { 
+    const xmlhttp=new XMLHttpRequest()
+    xmlhttp.onreadystatechange = function() { 
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) { 
+            return xmlhttp.responseText
+        } else {
+            return "failed"
+        }
+    } 
+    xmlhttp.open("GET", "https://1580.lviv.ua")
+    xmlhttp.send()
+    return xmlhttp
+}
 
-function gotData(data) {
-    console.log(data)
-}*/
+export const readSite = 
+functions.https.onRequest((request, response) => {
+    const xml = httpGet()
+    response.send(xml)
+})
