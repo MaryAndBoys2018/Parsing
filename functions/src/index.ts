@@ -1,18 +1,13 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+import notifications from './notifications.json'
+//const url = require('url')
 
 admin.initializeApp()
 
-const complaint = {
-    type: 'test backend',
-    status: 'tesing',
-    address: 'somewhere',
-    company: 'Marinych'
-}
-
-export const readComplaint = 
+export const readNotification = 
 functions.https.onRequest((request, response) => {
-     admin.firestore().collection('ComplaintsList').get()
+     admin.firestore().collection('NotificationsList').get()
     .then(snapshot => {
         const data = new Array()
         snapshot.forEach(doc => {
@@ -26,31 +21,12 @@ functions.https.onRequest((request, response) => {
     })
 })
 
-export const writeComplaint = 
+export const writeNotification = 
 functions.https.onRequest((request, response) => {
-     return admin.firestore().collection('ComplaintsList').doc('test')
-     .set(complaint).then(() => {
+    console.log(notifications[0])
+     return admin.firestore().collection('NotificationsList').doc('test')
+     .set(notifications[0]).then(() => {
          console.log('#victory!')
-         response.send(complaint)
+         response.send(notifications[0])
      })
-})
-
-function httpGet() { 
-    const xmlhttp=new XMLHttpRequest()
-    xmlhttp.onreadystatechange = function() { 
-        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) { 
-            return xmlhttp.responseText
-        } else {
-            return "failed"
-        }
-    } 
-    xmlhttp.open("GET", "https://1580.lviv.ua")
-    xmlhttp.send()
-    return xmlhttp
-}
-
-export const readSite = 
-functions.https.onRequest((request, response) => {
-    const xml = httpGet()
-    response.send(xml)
 })
