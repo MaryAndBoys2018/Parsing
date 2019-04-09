@@ -6,10 +6,14 @@ import re
 
 def extractData():
     r = requests.get("http://loe.lviv.ua/ua/planovi_vidkluchenna")
-    pattern_for_site = r"<table style=\"width: 100%\" cellspacing=\"5\" cellpadding=\"5\"><tr><th style=\"padding: 10px; font-weight: bold; width: 20%\">Район</th><th style=\"font-weight: bold; width: 20%\">Нас. пункт</th><th style=\"font-weight: bold; width: 20%\">Вулиця</th><th style=\"font-weight: bold; width: 15%\">Буд.</th><th style=\"font-weight: bold; width: 25%\">Період</th></tr><tr><td>.+</td></tr></table><br><br />"
+    pattern_for_site = r"<table style=\"width: 100%\" cellspacing=\"5\" cellpadding=\"5\"><tr><th style=\"padding: 10px; font-weight: bold; width: 20%\">Район</th><th style=\"font-weight: bold; width: 20%\">Нас. пункт</th><th style=\"font-weight: bold; width: 20%\">Вулиця</th><th style=\"font-weight: bold; width: 15%\">Буд.</th><th style=\"font-weight: bold; width: 25%\">Період</th></tr>.+</table><br><br />"
     table = re.findall(pattern_for_site, r.text)
-    pattern_for_table = r"<tr><td>.+</td></tr>"
-    return re.findall(pattern_for_table, table[0])
+    dirty_data = table[0].split("</tr>")
+    clear_data = []
+    for i in range(0, len(dirty_data)):
+        if i % 11 != 0:
+            clear_data.append(dirty_data[i])
+    return clear_data[0:-1]
 
 #===============================================================================
 
@@ -20,7 +24,7 @@ def convert(notifications):
         buffer = []
         dict_buffer = {}
         buffer.extend(notification.split("><"))
-        buffer = buffer[1:-1]
+        buffer = buffer[1:6]
         for i in range(len(buffer)):
             buffer[i] = buffer[i][3:-4]
             
@@ -28,7 +32,7 @@ def convert(notifications):
         dict_buffer["Нас.пункт"] = buffer[1]
         dict_buffer["Вулиця"] = buffer[2]
         dict_buffer["Буд."] = buffer[3]
-        dict_buffer["Період"] = buffer[4]
+        dict_buffer["Період"] = buffer[4][0:-1]
         
         data.append(dict_buffer)
 

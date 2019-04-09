@@ -24,7 +24,7 @@ functions.https.onRequest((request, response) => {
 export const writeNotification = 
 functions.https.onRequest((request, response) => {
     console.log(notifications[0])
-     return admin.firestore().collection('NotificationsList').doc('test')
+     return admin.firestore().collection('NotificationsList').doc()
      .set(notifications[0]).then(() => {
          console.log('#victory!')
          response.send(notifications[0])
