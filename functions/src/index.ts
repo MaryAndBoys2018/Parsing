@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import notifications from './notifications.json'
+//import notifications from './notifications.json'
 //const url = require('url')
 
 admin.initializeApp()
@@ -21,12 +21,44 @@ functions.https.onRequest((request, response) => {
     })
 })
 
-export const writeNotification = 
-functions.https.onRequest((request, response) => {
-    console.log(notifications[0])
-     return admin.firestore().collection('NotificationsList').doc()
-     .set(notifications[0]).then(() => {
-         console.log('#victory!')
-         response.send(notifications[0])
-     })
+export const writeNotification = functions.https.onRequest((request, response) => {
+    return admin.firestore().collection("NotificationsList").listDocuments()
+    .then(val => {
+        val.map(doc => {
+            doc.delete()
+            .catch(err => {
+                console.log(err)
+                response.status(500).send(err)
+            })
+        })
+        response.send("#victory!")
+    })
+    .catch(err => {
+      console.log(err)
+      response.status(500).send(err)
+    })
+
+    // for (const i of notifications) {
+    //     admin.firestore().collection('NotificationsList').add(i)
+    //     .then(() => {
+    //         console.log(i)
+    //     })
+    //     .catch(err =>{
+    //         console.log(err)
+    //         response.status(500).send(err)
+    //     })
+    // }
+
+    // return admin.firestore().collection('NotificationsList').get()
+    // .then(snapshot => {
+    //     const data = new Array()
+    //     snapshot.forEach(doc => {
+    //         data.push(doc.data())
+    //     })
+    //     response.send(data)
+    // })
+    // .catch(err => {
+    //   console.log(err)
+    //   response.status(500).send(err)
+    // })
 })
